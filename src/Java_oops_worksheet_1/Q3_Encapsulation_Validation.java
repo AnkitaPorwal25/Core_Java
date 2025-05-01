@@ -1,38 +1,46 @@
 package Java_oops_worksheet_1;
-class BankAccount{
+
+class BankAccount {
     private double balance;
     private String accountHolder;
-    private String accountNumber;
+    private final String accountNumber; // made final
 
-    public void setBalance(double balance){
-        if(balance>=0)
-        this.balance=balance;
-        else System.out.println("Enter valid amount");
+    // Constructor to initialize accountNumber
+    public BankAccount(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
-    public void setAccountHolder(String accountHolder){
-        this.accountHolder=accountHolder;
+
+    public void setBalance(double balance) {
+        if (balance >= 0)
+            this.balance = balance;
+        else
+            System.out.println("Enter valid amount");
     }
-    public void setAccountNumber(String accountNumber){
-        this.accountNumber=accountNumber;
+
+    public void setAccountHolder(String accountHolder) {
+        this.accountHolder = accountHolder;
     }
-    public double getBalance(){
+
+    public double getBalance() {
         return balance;
     }
-    public String getAccountHolder(){
+
+    public String getAccountHolder() {
         return accountHolder;
     }
 
-    public String getAccountNumber(){
+    public String getAccountNumber() {
         return accountNumber;
     }
 }
-public class Q3_Encapsulation_Validation {
-    public static void main(String ar[]){
-        BankAccount account = new BankAccount();
 
-        // Setting values
+public class Q3_Encapsulation_Validation {
+    public static void main(String ar[]) {
+        // Provide accountNumber at the time of object creation
+        BankAccount account = new BankAccount("ACC123456789");
+
+        // Setting other values
         account.setAccountHolder("Rohit Sharma");
-        account.setAccountNumber("ACC123456789");
         account.setBalance(15000.50);
 
         // Invalid balance test
