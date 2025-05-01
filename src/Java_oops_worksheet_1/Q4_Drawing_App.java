@@ -14,11 +14,13 @@ class Circle extends Shape{
     }
 }
 class Square extends Shape{
+    @Override
     public void draw(){
         System.out.println("Drawing Square right now");
     }
 }
 class Triangle extends Shape{
+    @Override
     public void draw(){
         System.out.println("Drawing Triangle right now");
     }

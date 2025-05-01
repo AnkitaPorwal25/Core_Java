@@ -15,7 +15,6 @@ class BankAccount{
     public void setAccountNumber(String accountNumber){
         this.accountNumber=accountNumber;
     }
-
     public double getBalance(){
         return balance;
     }
@@ -29,6 +28,19 @@ class BankAccount{
 }
 public class Q3_Encapsulation_Validation {
     public static void main(String ar[]){
+        BankAccount account = new BankAccount();
 
+        // Setting values
+        account.setAccountHolder("Rohit Sharma");
+        account.setAccountNumber("ACC123456789");
+        account.setBalance(15000.50);
+
+        // Invalid balance test
+        account.setBalance(-500);  // Should trigger validation message
+
+        // Getting and displaying values
+        System.out.println("Account Holder: " + account.getAccountHolder());
+        System.out.println("Account Number: " + account.getAccountNumber());
+        System.out.println("Balance: ₹" + account.getBalance());
     }
 }

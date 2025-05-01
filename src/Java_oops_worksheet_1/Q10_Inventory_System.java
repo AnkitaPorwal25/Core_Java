@@ -1,59 +1,88 @@
 package Java_oops_worksheet_1;
-class Product{
+class Product {
     int id;
     String name;
     double price;
-    Product(int id,String name,double price){
-        this.id=id;
-        this.name=name;
-        this.price=price;
+
+    Product(int id, String name, double price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
     }
+
     public void displayProduct() {
-        toString();
+        System.out.println(this); // Fix: Actually print the product
     }
+
     @Override
-    public String toString(){
-        return "id = "+id+"\t name="+name+"\t price="+price;
+    public String toString() {
+        return "id = " + id + "\t name = " + name + "\t price = " + price;
     }
-    public double getPrice(){
+
+    public double getPrice() {
         return price;
     }
-    public String getName(){
+
+    public String getName() {
         return name;
     }
-    public int getId(){
+
+    public int getId() {
         return id;
     }
 }
+
 class Store{
     private Product[] products;
-
-    public Store(Product[] products) {
-        this.products = products;
+    Store(Product []products){
+        this.products=products;
     }
-    void displayAllProducts(){
+    void displayAllProducts() {
         System.out.println("Display all products");
-        for(Product p:products){
-            System.out.println(p);
+        if (products == null) {
+            System.out.println("No products available.");
+            return;
+        }
+
+        for (Product p : products) {
+            if (p != null)
+                System.out.println(p);
+            else
+                System.out.println("Null product found.");
         }
     }
 
-    public Product findHighestPriceProduct(){
-        double maxPrice=Double.MIN_VALUE;
-        Product s=null;
-        for(Product p:products){
-            if(p.getPrice()>maxPrice){
-                maxPrice=p.getPrice();
-                s=p;
+    public Product findHighestPriceProduct() {
+        if (products == null) {
+            System.out.println("No products available.");
+            return null;
+        }
+
+        double maxPrice = Double.MIN_VALUE;
+        Product s = null;
+
+        for (Product p : products) {
+            if (p != null && p.getPrice() > maxPrice) {
+                maxPrice = p.getPrice();
+                s = p;
             }
         }
+
         return s;
     }
 
-    public Product searchProductByName(String name){
-        for(Product p:products){
-            if(p.getName().equalsIgnoreCase(name))return p;
+    public Product searchProductByName(String name) {
+        if (products == null) {
+            System.out.println("No products available.");
+            return null;
         }
+
+        for (Product p : products) {
+            if (p != null && p.getName() != null && p.getName().equalsIgnoreCase(name)) {
+                return p;
+            }
+        }
+
         return null;
     }
 

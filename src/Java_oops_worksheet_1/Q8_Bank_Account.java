@@ -10,8 +10,9 @@ class BankAccount1{
         this.type=type;
     }
 
-    public void updateBalance(double balance){
-        this.balance=balance;
+    public void updateBalance(double amount){
+        if(amount>=0) balance=amount;
+        else System.out.println("This is not a valid balance to be updated..");
     }
 
     public void getDetails(){

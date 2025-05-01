@@ -1,24 +1,24 @@
 package Day_1_Objective;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
-// Interface for transaction operations
+// Interface remains the same
 interface Transaction {
     void deposit(double amount);
     void withdraw(double amount) throws InsufficientFundsException;
 }
 
-// Exception class for insufficient funds
+// Custom exception for insufficient funds
 class InsufficientFundsException extends Exception {
     public InsufficientFundsException(String message) {
         super(message);
     }
 }
 
-
-// Abstract class for a generic bank account
+// Abstract bank account class
 abstract class BankAccount implements Transaction {
-    protected String accountNumber;
+    protected final String accountNumber;  // Made final
     private double balance;
 
     // Constructor for BankAccount class
@@ -28,61 +28,52 @@ abstract class BankAccount implements Transaction {
         System.out.println("BankAccount created with Account Number: " + accountNumber + " and Balance: " + balance);
     }
 
-    // Abstract method to display account details
     public abstract void displayAccountDetails();
 
-    // Getter and Setter for balance
     public double getBalance() {
         return balance;
     }
 
     public void setBalance(double balance) {
-        if (balance >= 0) {
+        if (balance >= 0)
             this.balance = balance;
-        } else {
+        else
             System.out.println("Balance cannot be negative");
-        }
     }
 
-    // Deposit method
     public void deposit(double amount) {
         if (amount > 0) {
             balance += amount;
-            System.out.println("Deposited " + amount + ". Current Balance: " + balance);
+            System.out.println("Deposited " + amount + ". New Balance: " + balance);
         } else {
             System.out.println("Invalid deposit amount.");
         }
     }
 
-    // Withdraw method with exception handling
     public void withdraw(double amount) throws InsufficientFundsException {
         if (amount > 0 && amount <= balance) {
             balance -= amount;
-            System.out.println("Withdrew " + amount + ". Current Balance: " + balance);
+            System.out.println("Withdrew " + amount + ". New Balance: " + balance);
         } else {
-            throw new InsufficientFundsException("Insufficient funds or invalid withdrawal amount");
+            throw new InsufficientFundsException("Insufficient funds or invalid withdrawal amount.");
         }
     }
 }
 
-// Concrete class for Savings Account
+// Savings account class
 class SavingsAccount extends BankAccount {
     private double interestRate;
 
-    // Constructor for SavingsAccount class
     public SavingsAccount(String accountNumber, double initialBalance, double interestRate) {
-        super(accountNumber, initialBalance);  // Constructor chaining
+        super(accountNumber, initialBalance);
         this.interestRate = interestRate;
-        System.out.println("SavingsAccount created with Interest Rate: " + interestRate);
     }
 
-    // Overriding method to display account details
     @Override
     public void displayAccountDetails() {
-        System.out.println("Savings Account - Account Number: " + accountNumber + ", Balance: " + getBalance() + ", Interest Rate: " + interestRate);
+        System.out.println("Account Number: " + accountNumber + " | Balance: " + getBalance() + " | Interest Rate: " + interestRate);
     }
 
-    // Method to apply interest
     public void applyInterest() {
         double interest = getBalance() * interestRate;
         setBalance(getBalance() + interest);
@@ -90,59 +81,113 @@ class SavingsAccount extends BankAccount {
     }
 }
 
-// Main class to test the system with menu-driven approach
+// Main banking system
 public class BankingSystem {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        SavingsAccount mySavings = new SavingsAccount("123456789", 1000.00, 0.05);
-
+        ArrayList<SavingsAccount> accounts = new ArrayList<>();
         int choice;
 
         do {
-            // Display menu
-            System.out.println("\nMenu:");
-            System.out.println("1. View Account Details");
-            System.out.println("2. Deposit");
-            System.out.println("3. Withdraw");
-            System.out.println("4. Apply Interest");
-            System.out.println("5. Exit");
-            System.out.print("Enter your choice: ");
+            System.out.println("\n--- Banking Menu ---");
+            System.out.println("1. Create New Account");
+            System.out.println("2. List All Accounts");
+            System.out.println("3. View Account Details");
+            System.out.println("4. Deposit");
+            System.out.println("5. Withdraw");
+            System.out.println("6. Apply Interest");
+            System.out.println("7. Exit");
+            System.out.print("Enter choice: ");
             choice = scanner.nextInt();
 
             switch (choice) {
                 case 1:
-                    // Display account details
-                    mySavings.displayAccountDetails();
+                    // Create new account
+                    System.out.print("Enter account number: ");
+                    String accNum = scanner.next();
+                    System.out.print("Enter initial balance: ");
+                    double balance = scanner.nextDouble();
+                    System.out.print("Enter interest rate (e.g. 0.05): ");
+                    double rate = scanner.nextDouble();
+                    accounts.add(new SavingsAccount(accNum, balance, rate));
                     break;
+
                 case 2:
-                    // Deposit amount
-                    System.out.print("Enter deposit amount: ");
-                    double depositAmount = scanner.nextDouble();
-                    mySavings.deposit(depositAmount);
-                    break;
-                case 3:
-                    // Withdraw amount
-                    System.out.print("Enter withdrawal amount: ");
-                    double withdrawAmount = scanner.nextDouble();
-                    try {
-                        mySavings.withdraw(withdrawAmount);
-                    } catch (InsufficientFundsException e) {
-                        System.out.println(e.getMessage());
+                    // List all accounts
+                    if (accounts.isEmpty()) {
+                        System.out.println("No accounts found.");
+                    } else {
+                        System.out.println("Available Accounts:");
+                        for (SavingsAccount acc : accounts) {
+                            System.out.println("- " + acc.accountNumber);
+                        }
                     }
                     break;
+
+                case 3:
+                    // View details
+                    SavingsAccount accDetails = findAccount(accounts, scanner);
+                    if (accDetails != null) accDetails.displayAccountDetails();
+                    break;
+
                 case 4:
-                    // Apply interest
-                    mySavings.applyInterest();
+                    // Deposit
+                    SavingsAccount accDeposit = findAccount(accounts, scanner);
+                    if (accDeposit != null) {
+                        System.out.print("Enter deposit amount: ");
+                        double amt = scanner.nextDouble();
+                        accDeposit.deposit(amt);
+                    }
                     break;
+
                 case 5:
-                    // Exit the program
-                    System.out.println("Exiting the system...");
+                    // Withdraw
+                    SavingsAccount accWithdraw = findAccount(accounts, scanner);
+                    if (accWithdraw != null) {
+                        System.out.print("Enter withdrawal amount: ");
+                        double amt = scanner.nextDouble();
+                        try {
+                            accWithdraw.withdraw(amt);
+                        } catch (InsufficientFundsException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
                     break;
+
+                case 6:
+                    // Apply interest
+                    SavingsAccount accInterest = findAccount(accounts, scanner);
+                    if (accInterest != null) accInterest.applyInterest();
+                    break;
+
+                case 7:
+                    System.out.println("Exiting...");
+                    break;
+
                 default:
-                    System.out.println("Invalid choice! Please select a valid option.");
+                    System.out.println("Invalid option.");
             }
-        } while (choice != 5);  // Continue until the user selects "Exit"
+        } while (choice != 7);
 
         scanner.close();
+    }
+
+    // Utility method to find account by account number
+    private static SavingsAccount findAccount(ArrayList<SavingsAccount> accounts, Scanner scanner) {
+        if (accounts.isEmpty()) {
+            System.out.println("No accounts available.");
+            return null;
+        }
+
+        System.out.print("Enter account number: ");
+        String inputAcc = scanner.next();
+        for (SavingsAccount acc : accounts) {
+            if (acc.accountNumber.equals(inputAcc)) {
+                return acc;
+            }
+        }
+
+        System.out.println("Account not found.");
+        return null;
     }
 }
